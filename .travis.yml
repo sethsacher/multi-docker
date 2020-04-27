@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t sethsacher/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true sethsacher/react-test npm test
+
+after_success:
+  # Build prod docker images
+  - docker build -t sethsacher/multi-client ./client
+  - docker build -t sethsacher/multi-nginx ./nginx
+  - docker build -t sethsacher/multi-server ./server
+  - docker build -t sethsacher/multi-worker ./worker
+  # login to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to Docker Hub
+  - docker push sethsacher/multi-client
+  - docker push sethsacher/multi-nginx
+  - docker push sethsacher/multi-server
+  - docker push sethsacher/multi-worker
