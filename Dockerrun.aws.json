@@ -24,7 +24,7 @@
     },
     {
       "name": "nginx",
-      "image": "stephengrider/multi-nginx",
+      "image": "sethsacher/multi-nginx",
       "hostname": "nginx",
       "essential": true,
       "portMappings": [
